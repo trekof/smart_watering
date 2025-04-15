@@ -1,10 +1,11 @@
 {
-  "name": "backend",
+  "name": "mongoose",
   "version": "1.0.0",
-  "description": "",
+  "description": "Replace all keys in .env file to your configuration",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
@@ -14,8 +15,9 @@
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
-    "express": "^4.18.2",
-    "mongoose": "^6.10.0",
+    "express": "^4.21.2",
+    "mongodb": "^6.15.0",
+    "mongoose": "^6.13.8",
     "mqtt": "^4.3.7",
     "nodemon": "^2.0.20"
   }

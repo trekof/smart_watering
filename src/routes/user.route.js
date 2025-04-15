@@ -1,6 +1,10 @@
-const route = require('express').Router()
-const {createUser} = require('../controllers/user.controller')
+const route = require('express').Router();
+const { createUser, loginUser, logoutUser } = require('../controllers/user.controller');
 
-route.post('/user',createUser)
+route.post('/user', createUser);
 
-module.exports = route
+route.post('/login', loginUser);
+
+route.post('/logout', logoutUser);
+
+module.exports = route;
