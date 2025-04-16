@@ -1,4 +1,4 @@
-const { createUser, createUserLogin, loginUser, logoutUser } = require('../services/user.service');
+const { createUser, createUserLogin, loginUser, logoutUser, getUsageHistory } = require('../services/user.service');
 
 module.exports = {
     createUser: async (req, res) => {
@@ -23,5 +23,11 @@ module.exports = {
         let userInfo = req.body.userInfo;
         let data = await logoutUser(userInfo);
         res.status(data.code).json(data.message);
-    }
+    },
+
+    getUsageHistory: async (req, res) => {
+        const userId = req.params.id;
+        const result = await getUsageHistory(userId);
+        res.status(result.code).json(result.message);
+    },
 };
