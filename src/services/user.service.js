@@ -3,12 +3,35 @@ const Userlogin = require('../models/userlogin.model');
 
 module.exports = {
     createUser: async (userInfo) => {
-        let user = new User(userInfo);
-        await user.save();
-        return {
-            code: 200,
-            message: userInfo
-        };
+        try {
+            const existingUser = await User.find({ username: userInfo.username }).exec();
+            if (existingUser.length > 0) {
+                return {
+                    code: 200,
+                    message: `Username ${userInfo.username} is already taken`
+                };
+            }
+    
+            if (userInfo.password.length === 0) {
+                return {
+                    code: 400,
+                    message: 'Password cannot be empty'
+                };
+            }
+
+            let user = new User(userInfo);
+            await user.save();
+    
+            return {
+                code: 200,
+                message: 'User created successfully'
+            };
+        } catch (err) {
+            return {
+                code: 500,
+                message: 'Server error'
+            };
+        }
     },
 
     createUserLogin: async (userInfo) => {
@@ -104,5 +127,29 @@ module.exports = {
                 message: 'Server error'
             };
         }
-    }
+    },
+
+    getUsageHistory: async (userId) => {
+        try {
+            // Tìm người dùng theo ID
+            const user = await User.findById(userId);
+            if (!user) {
+                return {
+                    code: 404,
+                    message: 'User not found'
+                };
+            }
+
+            return {
+                code: 200,
+                message: user.loginHistory
+            };
+        } catch (error) {
+            console.error('Error in service:', error);
+            return {
+                code: 500,
+                message: 'Internal server error'
+            };
+        }
+    },
 };
