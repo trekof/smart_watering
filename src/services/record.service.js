@@ -39,6 +39,39 @@ const calculateStats = async (days) => {
     };
 };
 
+const calculateStatsForSensor = async (days, sensor) => {
+    const fromDate = new Date(Date.now() - days * 24*60*60*1000)
+  
+    const records = await Record.find({
+      sensorName: sensor,
+      createdAt: { $gte: fromDate }
+    })
+  
+    if (records.length === 0) {
+      return {
+        average: null,
+        max: null,
+        min: null
+      }
+    }
+  
+    const values = records.map(r => parseFloat(r.value))
+    const average = values.reduce((a,b) => a+b, 0) / values.length
+  
+    let maxRec = records[0], minRec = records[0]
+    for (let r of records) {
+      const v = parseFloat(r.value)
+      if (v > parseFloat(maxRec.value)) maxRec = r
+      if (v < parseFloat(minRec.value)) minRec = r
+    }
+  
+    return {
+      average: parseFloat(average.toFixed(2)),
+      max: { value: parseFloat(maxRec.value), time: maxRec.createdAt },
+      min: { value: parseFloat(minRec.value), time: minRec.createdAt }
+    }
+  }
+
 module.exports = {
     addARecord: async (recordInfo) => {
         let record = new Record(recordInfo);
@@ -52,5 +85,14 @@ module.exports = {
         return { code: 200, message: result };
     },
     getAvg7Days: async () => calculateStats(7),
-    getAvg30Days: async () => calculateStats(30)
+    getAvg30Days: async () => calculateStats(30),
+    getAvg7DaysBySensor: async (sensorName) => {
+        const stats = await calculateStatsForSensor(7, sensorName)
+        return { code: 200, message: stats }
+      },
+        
+    getAvg30DaysBySensor: async (sensorName) => {
+        const stats = await calculateStatsForSensor(30, sensorName)
+        return { code: 200, message: stats }
+    }
 };
