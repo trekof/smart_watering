@@ -1,6 +1,11 @@
 const mqtt = require('mqtt');
 const {addARecord} = require('../services/record.service');
-
+// Interface cho adapter  pattern pattern singleton pattern
+// class IDatadapter { 
+// async connect(){
+// console.log("Connected IDataadaprter");
+// }
+// }
 class MQTTAdafruitIO{
     constructor(username,key,options){
         this.username = username
@@ -36,7 +41,7 @@ class MQTTAdafruitIO{
     }
 
     publish(feed_id,data){
-        client.publish(this.username + "/feeds/" + feed_id,data,()=>{
+        this.client.publish(this.username + "/feeds/" + feed_id,data,()=>{
             console.log("Published to " + feed_id + " : " + data);
         })
     }

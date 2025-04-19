@@ -131,7 +131,6 @@ module.exports = {
 
     getUsageHistory: async (userId) => {
         try {
-            // Tìm người dùng theo ID
             const user = await User.findById(userId);
             if (!user) {
                 return {
@@ -141,7 +140,7 @@ module.exports = {
             }
 
             return {
-                code: 200,
+                code: 200,  
                 message: user.loginHistory
             };
         } catch (error) {
