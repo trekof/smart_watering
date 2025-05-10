@@ -20,7 +20,8 @@ const mongoAdapter = new MongoAdapter(
 mongoAdapter.connect();
 
 const username = 'vanminhcs'
-const key = 'aio_yvuX72xklGhlEti1p9MLMlYUERRm'
+// const key = 'fakeKey'
+const key = 'aio_QkbD76BxXwwbSmlL8JEyj95ucfDO'
 const options = {
     port: 8883
 }
@@ -42,10 +43,24 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 
 app.post('/api/publish/:feed_id', async (req, res) => {
-    const feed_id = req.params.feed_id;
-    const data = req.body.data
-    client.publish(feed_id, data)
-})
+    try {
+        const feed_id = req.params.feed_id;
+        const data = req.body.data;
+
+        await client.publish(feed_id, data); // gửi lên MQTT
+
+        res.status(200).json({ 
+            code: 200, 
+            message: 'Successful' 
+        });
+    } catch (err) {
+        console.error(err); // log lỗi nếu cần
+        res.status(500).json({ 
+            code: 500, 
+            message: 'Error' 
+        });
+    }
+});
 //add routes
 app.use(require('./routes/user.route'))
 app.use(require('./routes/userlogin.route'))

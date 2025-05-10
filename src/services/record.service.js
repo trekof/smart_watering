@@ -82,6 +82,49 @@ const calculateDailyAverages = async () => {
     };
 };
 
+const calculateMonthlyAverages = async () => {
+    const sensorNames = ['soil', 'humid', 'temperature'];
+    const result = {};
+
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const startDate = new Date(now.getTime() - 360 * 24 * 60 * 60 * 1000);
+
+    for (let sensor of sensorNames) {
+        result[sensor] = [];
+
+        for (let i = 11; i >= 0; i--) {
+            const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            const nextMonth = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 1);
+
+            const records = await Record.find({
+                sensorName: sensor,
+                createdAt: { $gte: monthDate, $lt: nextMonth }
+            });
+
+            if (records.length === 0) {
+                result[sensor].push({
+                    month: `${monthDate.getFullYear()}-${String(monthDate.getMonth() + 1).padStart(2, '0')}`,
+                    average: null
+                });
+                continue;
+            }
+
+            const values = records.map(r => parseFloat(r.value));
+            const avg = values.reduce((a, b) => a + b, 0) / values.length;
+
+            result[sensor].push({
+                month: `${monthDate.getFullYear()}-${String(monthDate.getMonth() + 1).padStart(2, '0')}`,
+                average: parseFloat(avg.toFixed(2))
+            });
+        }
+    }
+
+    return {
+        code: 200,
+        message: result
+    };
+};
 
 const calculateStatsForSensor = async (days, sensor) => {
     const fromDate = new Date(Date.now() - days * 24*60*60*1000)
@@ -145,4 +188,5 @@ module.exports = {
         return { code: 200, message: stats }
     },
     getDailyAvg7Days: async () => calculateDailyAverages(),
+    getMonthlyAvg1Year: async () => calculateMonthlyAverages(),
 };

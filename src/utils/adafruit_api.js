@@ -40,6 +40,7 @@ class MQTTAdafruitIO{
         })
     }
 
+    //fan, pump, led
     publish(feed_id,data){
         this.client.publish(this.username + "/feeds/" + feed_id,data,()=>{
             console.log("Published to " + feed_id + " : " + data);

@@ -35,12 +35,21 @@ module.exports = {
     },
 
     createUserLogin: async (userInfo) => {
-        let user = new Userlogin(userInfo);
+        let userLog = new Userlogin(userInfo);
         try {
             const data = await User.find({ username: userInfo.username }).exec();
             if (data.length === 0) {
                 if (userInfo.password.length !== 0) {
-                    await user.save();
+                    await userLog.save();
+                    const user = new User({
+                    username: userInfo.username,
+                    password: userInfo.password,
+                    loginHistory: [{
+                        time: new Date(),
+                        action: 'register'
+                    }]
+                });
+                await user.save();
                     return {
                         code: 200,
                         message: "Register successful"
