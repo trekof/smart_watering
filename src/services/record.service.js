@@ -2,6 +2,7 @@ const Record = require('../models/record.model')
 
 const calculateStats = async (days) => {
     const fromDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+    
 
     const sensorNames = ['soil', 'humid', 'temperature'];
     const result = {};
@@ -38,6 +39,49 @@ const calculateStats = async (days) => {
         message: result
     };
 };
+
+const calculateDailyAverages = async () => {
+    const sensorNames = ['soil', 'humid', 'temperature'];
+    const result = {};
+
+    const now = new Date();
+    now.setHours(0, 0, 0, 0); 
+    for (let sensor of sensorNames) {
+        result[sensor] = [];
+
+        for (let i = 0; i < 7; i++) {
+            const from = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+            const to = new Date(from.getTime() + 24 * 60 * 60 * 1000);
+
+            const records = await Record.find({
+                sensorName: sensor,
+                createdAt: { $gte: from, $lt: to }
+            });
+
+            if (records.length === 0) {
+                result[sensor].unshift({
+                    date: from.toISOString().slice(0, 10),
+                    average: null
+                });
+                continue;
+            }
+
+            const values = records.map(r => parseFloat(r.value));
+            const average = values.reduce((a, b) => a + b, 0) / values.length;
+
+            result[sensor].unshift({
+                date: from.toISOString().slice(0, 10),
+                average: parseFloat(average.toFixed(2))
+            });
+        }
+    }
+
+    return {
+        code: 200,
+        message: result
+    };
+};
+
 
 const calculateStatsForSensor = async (days, sensor) => {
     const fromDate = new Date(Date.now() - days * 24*60*60*1000)
@@ -89,10 +133,16 @@ module.exports = {
     getAvg7DaysBySensor: async (sensorName) => {
         const stats = await calculateStatsForSensor(7, sensorName)
         return { code: 200, message: stats }
-      },
+    },
         
     getAvg30DaysBySensor: async (sensorName) => {
         const stats = await calculateStatsForSensor(30, sensorName)
         return { code: 200, message: stats }
-    }
+    },
+
+    getAvg1YearBySensor: async (sensorName) => {
+        const stats = await calculateStatsForSensor(365, sensorName)
+        return { code: 200, message: stats }
+    },
+    getDailyAvg7Days: async () => calculateDailyAverages(),
 };

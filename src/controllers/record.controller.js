@@ -4,7 +4,9 @@ const {
     getAvg7Days, 
     getAvg30Days,
     getAvg7DaysBySensor,
-    getAvg30DaysBySensor
+    getAvg30DaysBySensor,
+    getAvg1YearBySensor,
+    getDailyAvg7Days    
 } = require('../services/record.service')
 
 module.exports = {
@@ -35,5 +37,14 @@ module.exports = {
         const { sensorName } = req.params
         const data = await getAvg30DaysBySensor(sensorName)
         res.status(data.code).json(data.message)
-    }
+    },
+    getAvg1YearBySensor: async (req, res) => {
+        const { sensorName } = req.params
+        const data = await getAvg1YearBySensor(sensorName)
+        res.status(data.code).json(data.message)
+    },
+    getDailyAvg7Days: async (req, res) => {
+        const data = await getDailyAvg7Days();
+        res.status(data.code).json(data.message);
+    },
 };

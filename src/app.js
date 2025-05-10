@@ -20,7 +20,7 @@ const mongoAdapter = new MongoAdapter(
 mongoAdapter.connect();
 
 const username = 'vanminhcs'
-const key = 'aio_sVlH42UScmGqBHFpysEWi8W7Rmjj'
+const key = 'aio_yvuX72xklGhlEti1p9MLMlYUERRm'
 const options = {
     port: 8883
 }
