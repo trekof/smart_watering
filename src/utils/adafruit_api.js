@@ -1,13 +1,10 @@
 const mqtt = require('mqtt');
 const {addARecord} = require('../services/record.service');
-// Interface cho adapter  pattern pattern singleton pattern
-// class IDatadapter { 
-// async connect(){
-// console.log("Connected IDataadaprter");
-// }
-// }
-class MQTTAdafruitIO{
+const {Adapter} = require('../cloud/mongoDB');
+
+class MQTTAdafruitIO extends Adapter{
     constructor(username,key,options){
+        super('MQTTAdafruitIO');
         this.username = username
         this.key = key
         this.url = `mqtts://${username}:${key}@io.adafruit.com`

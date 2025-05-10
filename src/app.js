@@ -21,7 +21,7 @@ mongoAdapter.connect();
 
 const username = 'vanminhcs'
 // const key = 'fakeKey'
-const key = 'aio_QkbD76BxXwwbSmlL8JEyj95ucfDO'
+const key = 'aio_sRrL216m7GRbugNvrXhqbzH1Rqxo'
 const options = {
     port: 8883
 }
@@ -47,14 +47,14 @@ app.post('/api/publish/:feed_id', async (req, res) => {
         const feed_id = req.params.feed_id;
         const data = req.body.data;
 
-        await client.publish(feed_id, data); // gửi lên MQTT
+        await client.publish(feed_id, data);
 
         res.status(200).json({ 
             code: 200, 
             message: 'Successful' 
         });
     } catch (err) {
-        console.error(err); // log lỗi nếu cần
+        console.error(err); 
         res.status(500).json({ 
             code: 500, 
             message: 'Error' 

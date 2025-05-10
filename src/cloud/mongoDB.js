@@ -15,9 +15,21 @@ const mongoose = require('mongoose');
 const mqtt = require('mqtt');
 const {addARecord} = require('../services/record.service');
 
-class MongoAdapter {
+class Adapter {
+    constructor(name) {
+        this.name = name;
+    }
+
+    connect() {
+        throw new Error("Method 'connect()' must be implemented.");
+    }
+}
+
+
+
+class MongoAdapter extends Adapter{
     constructor(uri, dbName, collectionName) {
-        // super();
+        super('MongoAdapter');  
         this.uri = uri;
         this.dbName = dbName;
         this.collectionName = collectionName;
@@ -37,4 +49,4 @@ class MongoAdapter {
     }
 }
 
-module.exports = {MongoAdapter}
+module.exports = {Adapter, MongoAdapter}
