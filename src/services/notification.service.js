@@ -17,8 +17,7 @@ module.exports = {
                     code:300,
                     message: 'User not found'
                 };
-            }
-        
+            } 
     },
 
     getAllNotification: async (query) => {

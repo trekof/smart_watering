@@ -6,6 +6,7 @@ require('./cloud/mongoDB')
 const {MongoAdapter} = require("./cloud/mongoDB")
 const app = express()
 const {MQTTAdafruitIO} = require('./utils/adafruit_api')
+const attachMQTTClient = require('./middleware');
 
 // const username = 'Heo_Rey'
 // const key = 'aio_dKJy32dJkMvsexDDgdoVbYTPNqxU'
@@ -19,21 +20,7 @@ const mongoAdapter = new MongoAdapter(
 )
 mongoAdapter.connect();
 
-const username = 'vanminhcs'
-// const key = 'fakeKey'
-const key = 'aio_csum112diqw6BxJDybyDOfXLcdAU'
-const options = {
-    port: 8883
-}
-
-let client = new MQTTAdafruitIO(username,key,options)
-
-
-client.connect()
-client.subscribe('humid')
-client.subscribe('soil')
-client.subscribe('temperature')
-
+app.use(attachMQTTClient);  
 
 
 // add some useful middleware
@@ -42,25 +29,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 
-app.post('/api/publish/:feed_id', async (req, res) => {
-    try {
-        const feed_id = req.params.feed_id;
-        const data = req.body.data;
-
-        await client.publish(feed_id, data);
-
-        res.status(200).json({ 
-            code: 200, 
-            message: 'Successful' 
-        });
-    } catch (err) {
-        console.error(err); 
-        res.status(500).json({ 
-            code: 500, 
-            message: 'Error' 
-        });
-    }
-});
+app.use(require('./routes/device.route'));
 //add routes
 app.use(require('./routes/user.route'))
 app.use(require('./routes/userlogin.route'))
