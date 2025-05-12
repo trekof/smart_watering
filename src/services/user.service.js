@@ -1,5 +1,5 @@
 const User = require('../models/user.model');
-const Userlogin = require('../models/userlogin.model');
+const Userlogin = require('../models/userreg.model');
 
 module.exports = {
     createUser: async (userInfo) => {
@@ -126,7 +126,7 @@ module.exports = {
                 };
             } else {
                 return {
-                    code: 200,
+                    code: 404,
                     message: 'User not found'
                 };
             }
@@ -138,9 +138,9 @@ module.exports = {
         }
     },
 
-    getUsageHistory: async (userId) => {
+    getUsageHistory: async (username) => {
         try {
-            const user = await User.findById(userId);
+            const user = await User.findOne({ username: username });
             if (!user) {
                 return {
                     code: 404,

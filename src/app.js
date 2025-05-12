@@ -21,7 +21,7 @@ mongoAdapter.connect();
 
 const username = 'vanminhcs'
 // const key = 'fakeKey'
-const key = 'aio_sRrL216m7GRbugNvrXhqbzH1Rqxo'
+const key = 'aio_csum112diqw6BxJDybyDOfXLcdAU'
 const options = {
     port: 8883
 }

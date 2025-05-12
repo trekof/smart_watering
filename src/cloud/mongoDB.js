@@ -29,12 +29,17 @@ class Adapter {
 
 class MongoAdapter extends Adapter{
     constructor(uri, dbName, collectionName) {
-        super('MongoAdapter');  
-        this.uri = uri;
-        this.dbName = dbName;
-        this.collectionName = collectionName;
-        //this.SensorModel = null;
-      }
+    if (MongoAdapter._instance) {
+        return MongoAdapter._instance;
+    }
+
+    super('MongoAdapter');
+    this.uri = uri;
+    this.dbName = dbName;
+    this.collectionName = collectionName;
+
+    MongoAdapter._instance = this;
+    }
     
     async connect(){
         await mongoose.connect(this.uri, {

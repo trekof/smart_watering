@@ -26,8 +26,8 @@ module.exports = {
     },
 
     getUsageHistory: async (req, res) => {
-        const userId = req.params.id;
-        const result = await getUsageHistory(userId);
+        const username = req.params.username;
+        const result = await getUsageHistory(username);
         res.status(result.code).json(result.message);
     },
 };

@@ -7,6 +7,6 @@ route.post('/login', loginUser);
 
 route.post('/logout', logoutUser);
 
-route.get('/user/history/:id', getUsageHistory);
+route.get('/user/history/:username', getUsageHistory);
 
 module.exports = route;
